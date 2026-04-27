@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Global Weather App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
+  }
+
+  h1 {
+    text-align: center;
+    color: #0d47a1;
+    margin-bottom: 30px;
+  }
+
+  .search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  input {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #90caf9;
+  }
+
+  button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background: #0d47a1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #1565c0;
+  }
+
+  .section-title {
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #0d47a1;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  img {
+    margin: 10px 0;
+  }
+
+  body.dark {
+  background: linear-gradient(to bottom right, #1e1e1e, #121212);
+  color: #e0e0e0;
+}
+
+.dark .card {
+  background: #1f1f1f;
+  color: #e0e0e0;
+  box-shadow: 0 4px 10px rgba(255,255,255,0.05);
+}
+
+.dark input {
+  background: #2c2c2c;
+  color: white;
+  border: 1px solid #555;
+}
+
+.dark button {
+  background: #333;
+  color: white;
+}
+
+.dark-toggle {
+  float: right;
+  margin-bottom: 20px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #0d47a1;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Weather Anywhere Anytime</h1>
+
+  <div class="search">
+    <input id="placeInput" type="text" placeholder="Type a place name, e.g. Helsinki" />
+    <button id="searchBtn">Get Weather</button>
+  </div>
+
+  <button id="darkModeToggle" class="dark-toggle">🌙 Dark Mode</button>
+
+  <div id="status"></div>
+
+  <div id="astroInfo" style="margin-top:10px; font-size:16px;"></div>
+
+  <div>
+    <div class="section-title">Next 12 hours</div>
+    <div id="next12" class="cards"></div>
+  </div>
+
+  <div class="section-title">Temperature Graph (Next 12 Hours)</div>
+  <canvas id="tempChart" height="120"></canvas>
+
+  <div class="section-title">Rain Probability (Next 12 Hours)</div>
+  <canvas id="rainChart" height="120"></canvas>
+
+  <div>
+    <div class="section-title">Next 7 days</div>
+    <div id="next7" class="cards"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
