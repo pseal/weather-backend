@@ -1,148 +1,377 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Global Weather App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
-  }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weather Anytime Anywhere</title>
 
-  h1 {
-    text-align: center;
-    color: #0d47a1;
-    margin-bottom: 30px;
-  }
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(to bottom, #4facfe, #00f2fe);
+        color: black;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 10px 40px;
+    }
 
-  .search {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
+    h1 {
+        margin-top: 20px;
+        font-size: 32px;
+        font-weight: 700;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
 
-  input {
-    flex: 1;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #90caf9;
-  }
+    /* Search Bar */
+    .search-container {
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        max-width: 500px;
+    }
 
-  button {
-    padding: 12px 20px;
-    font-size: 16px;
-    background: #0d47a1;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
+    .search-container input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+    }
 
-  button:hover {
-    background: #1565c0;
-  }
+    .search-container button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #003cff;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
 
-  .section-title {
-    margin-top: 30px;
-    font-weight: bold;
-    font-size: 20px;
-    color: #0d47a1;
-  }
+    .search-container button:hover {
+        background: #0029b5;
+        transform: translateY(-1px);
+    }
 
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 15px;
-    margin-top: 10px;
-  }
+    /* HERO SECTION */
+    .hero {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(255,255,255,0.15);
+        padding: 20px;
+        border-radius: 16px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
 
-  .card {
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    text-align: center;
-    transition: transform 0.2s;
-  }
+    .hero.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-  .card:hover {
-    transform: translateY(-5px);
-  }
+    .hero h2 {
+        margin: 0;
+        font-size: 28px;
+    }
 
-  img {
-    margin: 10px 0;
-  }
+    .hero .temp {
+        font-size: 60px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
 
-  body.dark {
-  background: linear-gradient(to bottom right, #1e1e1e, #121212);
-  color: #e0e0e0;
-}
+    .hero .condition {
+        font-size: 30px;
+        opacity: 0.9;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
 
-.dark .card {
-  background: #1f1f1f;
-  color: #e0e0e0;
-  box-shadow: 0 4px 10px rgba(255,255,255,0.05);
-}
+    .hero-sub {
+        margin-top: 10px;
+        font-size: 20px;
+        opacity: 0.9;
+    }
 
-.dark input {
-  background: #2c2c2c;
-  color: white;
-  border: 1px solid #555;
-}
+    .animated-icon {
+        width: 70px;
+        height: 70px;
+        animation: floatIcon 3s ease-in-out infinite;
+    }
 
-.dark button {
-  background: #333;
-  color: white;
-}
+    @keyframes floatIcon {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+        100% { transform: translateY(0px); }
+    }
 
-.dark-toggle {
-  float: right;
-  margin-bottom: 20px;
-  padding: 8px 14px;
-  border-radius: 8px;
-  background: #0d47a1;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+    /* NEXT 2 HOURS BELOW HERO */
+    .next2-container {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .next2-card {
+        background: rgba(255,255,255,0.18);
+        padding: 14px;
+        border-radius: 16px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    .next2-card img {
+        width: 60px;
+    }
+
+    /* SUMMARY PANEL */
+    .summary-card {
+        width: 100%;
+        max-width: 900px;
+        background: rgba(255,255,255,0.18);
+        padding: 16px;
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        margin-bottom: 20px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 6px 0;
+        font-size: 20px;
+    }
+
+    /* Compass */
+    .compass-container {
+        width: 120px;
+        height: 120px;
+        margin: 10px auto;
+        position: relative;
+    }
+
+    .compass-base {
+        width: 100%;
+        height: 100%;
+        border: 4px solid rgba(255,255,255,0.4);
+        border-radius: 50%;
+        position: relative;
+    }
+
+    .compass-base::before {
+        content: "N";
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 16px;
+        opacity: 0.8;
+    }
+
+    .compass-needle {
+        width: 4px;
+        height: 50%;
+        background: red;
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform-origin: bottom center;
+        transform: translateX(-50%) rotate(0deg);
+        transition: transform 0.8s ease;
+    }
+
+    /* UV Bar */
+    .uv-bar {
+        width: 100%;
+        height: 12px;
+        border-radius: 6px;
+        background: linear-gradient(to right,
+            #4caf50 0%,
+            #ffeb3b 40%,
+            #ff9800 70%,
+            #f44336 100%
+        );
+        position: relative;
+        margin-top: 6px;
+    }
+
+    .uv-pointer {
+        width: 10px;
+        height: 20px;
+        background: white;
+        border-radius: 3px;
+        position: absolute;
+        top: -4px;
+        transform: translateX(-50%);
+        transition: left 0.5s ease;
+    }
+
+    /* CHARTS */
+    .chart-card {
+        width: 100%;
+        max-width: 900px;
+        background: rgba(255,255,255,0.18);
+        border-radius: 16px;
+        padding: 16px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        margin-bottom: 20px;
+    }
+
+    canvas {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 12px;
+        background: rgba(0,0,0,0.1);
+    }
+
+    /* NEXT 10 HOURS SCROLL ROW */
+    .next10-scroll {
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+        overflow-x: auto;
+        gap: 12px;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .next10-card {
+        min-width: 140px;
+        background: rgba(255,255,255,0.18);
+        padding: 14px;
+        border-radius: 16px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    .next10-card img {
+        width: 60px;
+    }
+
+    /* WEEKLY */
+    .weekly-grid {
+        width: 100%;
+        max-width: 900px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .day-card {
+        background: rgba(255,255,255,0.2);
+        padding: 15px;
+        border-radius: 12px;
+        text-align: center;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    footer {
+        margin: 10px 0;
+        opacity: 0.8;
+        font-size: 14px;
+        text-align: center;
+    }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-  <h1>Weather Anywhere Anytime</h1>
 
-  <div class="search">
-    <input id="placeInput" type="text" placeholder="Type a place name, e.g. Helsinki" />
-    <button id="searchBtn">Get Weather</button>
-  </div>
+<h1>Weather Anytime Anywhere</h1>
+<div style="position:absolute; top:15px; right:15px;">
+    <button id="langToggle" onclick="toggleLanguage()" 
+        style="padding:6px 12px; border-radius:8px; border:none; background:white; color:#333; cursor:pointer;">
+        EN / FI
+    </button>
+</div>
 
-  <button id="darkModeToggle" class="dark-toggle">🌙 Dark Mode</button>
 
-  <div id="status"></div>
+<!-- SEARCH -->
+<div class="search-container">
+    <input type="text" id="cityInput" placeholder="Enter city name..." />
+    <button onclick="getWeather()">Search</button>
+</div>
 
-  <div id="astroInfo" style="margin-top:10px; font-size:16px;"></div>
+<!-- HERO -->
+<div class="hero" id="heroSection">
+    <h2 id="locationName">City</h2>
+    <div class="temp" id="currentTemp">--°C</div>
+    <div class="condition" id="currentCondition">Condition</div>
+    <div class="hero-sub" id="heroExtra">Feels like --°C • Humidity --%</div>
+</div>
 
-  <div>
-    <div class="section-title">Next 12 hours</div>
-    <div id="next12" class="cards"></div>
-  </div>
+<!-- NEXT 2 HOURS BELOW HERO -->
+<div class="next2-container">
+    <div class="next2-card" id="nextHour1"></div>
+    <div class="next2-card" id="nextHour2"></div>
+</div>
 
-  <div class="section-title">Temperature Graph (Next 12 Hours)</div>
-  <canvas id="tempChart" height="120"></canvas>
+<!-- SUMMARY -->
+<div class="summary-card">
+    <h3>Today Summary</h3>
+    <div class="summary-row"><span>Feels Like:</span> <span id="sumFeels">--°C</span></div>
+    <div class="summary-row"><span>Humidity:</span> <span id="sumHumidity">--%</span></div>
+    <div class="summary-row"><span>Wind:</span> <span id="sumWind">-- kph</span></div>
+    <div class="summary-row"><span>Rain Chance:</span> <span id="sumRain">--%</span></div>
+    <div class="summary-row"><span>Sunrise:</span> <span id="sumSunrise">--:--</span></div>
+    <div class="summary-row"><span>Sunset:</span> <span id="sumSunset">--:--</span></div>
 
-  <div class="section-title">Rain Probability (Next 12 Hours)</div>
-  <canvas id="rainChart" height="120"></canvas>
+    <h3 style="margin-top:15px;">Wind Direction</h3>
+    <div class="compass-container">
+        <div class="compass-base"></div>
+        <div class="compass-needle" id="windNeedle"></div>
+    </div>
 
-  <div>
-    <div class="section-title">Next 7 days</div>
-    <div id="next7" class="cards"></div>
-  </div>
+    <h3 style="margin-top:15px;">UV Index</h3>
+    <div class="uv-bar">
+        <div class="uv-pointer" id="uvPointer"></div>
+    </div>
+    <div class="hint" id="uvText">UV: --</div>
+</div>
 
-  <script src="app.js"></script>
+<!-- TEMPERATURE CHART -->
+<div class="chart-card">
+    <h3>Temperature Trend (Next 12h)</h3>
+    <canvas id="tempChart" width="320" height="160"></canvas>
+</div>
+
+<!-- RAIN CHANCE CHART -->
+<div class="chart-card">
+    <h3>Rain Chance Trend (Next 12h)</h3>
+    <canvas id="rainChart" width="320" height="160"></canvas>
+</div>
+
+<!-- NEXT 10 HOURS SCROLL -->
+<h2 class="section-title">Next 10 Hours</h2>
+<div class="next10-scroll" id="next10Scroll"></div>
+
+<!-- WEEKLY -->
+<h2 class="section-title">Next 7 Days</h2>
+<div class="weekly-grid" id="weeklyForecast"></div>
+
+<footer>
+    Powered by WeatherAPI • Built by Prasenjit
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
